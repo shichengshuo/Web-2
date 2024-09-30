@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="cont">
+            <a class="logo">Crowdfunding</a>
+            <div class="nav">
+                <a href="./home.html">Home</a>
+                <a href="./search.html">Search</a>
+            </div>
+        </div>
+    </div>
+    <h3 class="cont">Home</h3>
+    <div class="container cont"></div>
+    <script>
+        // Declare an array to hold categories
+        let categories = []
+
+        // Function to render the list of fundraisers
+        function renderList(fundraisers) {
+            const fundraiserList = document.querySelector('.container');// Select the container element
+            fundraiserList.innerHTML = '';// Clear any existing content in the container
+
+            // Check if there are no fundraisers and display a message if the list is empty
+            if (fundraisers.length === 0) {
+                fundraiserList.innerHTML = '<p class="red">Empty</p>';// Display "Empty" message
+                return;// Exit the function early
+            }
+            // Iterate through each fundraiser to find and assign the category name based on category ID
+            fundraisers.forEach(item => {
+                item['CATEGORY_NAME'] = categories.find(c => item.CATEGORY_ID == c.CATEGORY_ID).NAME// Find the category name for each fundraiser
+                return item// Return the modified fundraiser item
+            })
+            // Iterate through each fundraiser to create and append the fundraiser cards to the container
+            fundraisers.forEach(fundraiser => {
+                const fundraiserCard = document.createElement('div');// Create a new div element for each fundraiser
+                fundraiserCard.className = 'card';// Assign a class name to the card
+                // Set the inner HTML for the fundraiser card with details
+                fundraiserCard.innerHTML = `
+                    <h3>${fundraiser.CAPTION}</h3>
+                    <p>Organizer: ${fundraiser.ORGANIZER}</p>
+                    <p>Category: ${fundraiser.CATEGORY_NAME}</p>
+                    <p>Target Funding: $${fundraiser.TARGET_FUNDING}</p>
+                    <p>Current Funding: $${fundraiser.CURRENT_FUNDING}</p>
+                    <p>City: ${fundraiser.CITY}</p>
+                    <a href="./fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">View Details</a>
+                `;
+                fundraiserList.appendChild(fundraiserCard);// Append the generated card to the fundraiser list container
+            });
+        }
+
+        // Function to fetch fundraisers from the server
+        function getFundraisers() {
+            fetch('http://localhost:3000/fundraisers')// Fetch fundraisers from the API
+                .then(response => response.json())// Parse the JSON response
+                .then(data => {
+                    renderList(data);// Call renderList to display the fundraisers
+                })
+        }
+        // Fetch categories from the server and then fetch fundraisers
+        // Fetch categories from the API parse the JSON response
+        fetch('http://localhost:3000/categories').then(response => response.json())
+            .then(data => {
+                categories = data// Assign the fetched categories to the categories array
+                getFundraisers()// Call getFundraisers to fetch and render fundraisers
+            })
+    </script>
+</body>
+
+</html>
