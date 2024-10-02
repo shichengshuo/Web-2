@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="cont">
+            <a class="logo">Crowdfunding</a>
+            <div class="nav">
+                <a href="./home.html">Home</a>
+                <a href="./search.html">Search</a>
+            </div>
+        </div>
+    </div>
+    <h3 class="cont">Layout</h3>
+    <div class="container cont"></div>
+    <script>
+        // Define a function named 'test'
+        function test() {
+            // Use the Fetch API to make a GET request to the specified URL
+            fetch(`http://localhost:3000/test`)
+                // The response is converted to JSON format
+                .then(response => response.json())
+                // After the JSON conversion, this block of code executes
+                .then(data => {
+                    // Log the received data to the console for debugging or inspection
+                    console.log('data', data)
+                })
+        }
+        // Call the 'test' function to execute the fetch request
+        test()
+    </script>
+</body>
+
+</html>

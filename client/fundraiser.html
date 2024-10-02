@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="cont">
+            <a class="logo">Crowdfunding</a>
+            <div class="nav">
+                <a href="./home.html">Home</a>
+                <a href="./search.html">Search</a>
+            </div>
+        </div>
+    </div>
+    <h3 class="cont">Fundraiser Details</h3>
+    <div class="container cont"></div>
+
+
+
+    <script>
+        // Initialize an empty array to hold category information
+        let categories = [];
+        // Create a URLSearchParams object to work with the query string
+        const urlParams = new URLSearchParams(window.location.search);
+        // Extract the 'id' parameter from the URL
+        const id = urlParams.get('id');
+        //Function to render the list of fundraisers
+        function renderList(fundraisers) {
+            // Select the container element where the fundraiser cards will be displayed
+            const fundraiserList = document.querySelector('.container');
+            // Clear any existing content in the container
+            fundraiserList.innerHTML = '';
+
+            // If there are no fundraisers, display an empty message
+            if (fundraisers.length === 0) {
+                fundraiserList.innerHTML = '<p class="red">Empty</p>';
+                return;
+            }
+            // For each fundraiser, find the corresponding category name and assign it to the item
+            fundraisers.forEach(item => {
+                // Match the category name based on CATEGORY_ID
+                item['CATEGORY_NAME'] = categories.find(c => item.CATEGORY_ID == c.CATEGORY_ID).NAME
+                return item
+            })
+            // Create and append fundraiser cards for each fundraiser
+            fundraisers.forEach(fundraiser => {
+                // Create a new div element for the fundraiser card
+                const fundraiserCard = document.createElement('div');
+                fundraiserCard.className = 'card';
+                // Set the inner HTML of the card with fundraiser details
+                fundraiserCard.innerHTML = `
+                    <h3>${fundraiser.CAPTION}</h3>
+                    <p>Organizer: ${fundraiser.ORGANIZER}</p>
+                    <p>Category: ${fundraiser.CATEGORY_NAME}</p>
+                    <p>Target Funding: $${fundraiser.TARGET_FUNDING}</p>
+                    <p>Current Funding: $${fundraiser.CURRENT_FUNDING}</p>
+                    <p>City: ${fundraiser.CITY}</p>
+                    <button class='donate'>donate</button>
+                `;
+                // Append the newly created card to the fundraiser list container
+                fundraiserList.appendChild(fundraiserCard);
+            });
+            // Add an event listener to the 'donate' button when it is clicked
+            document.querySelector('.donate').addEventListener('click', function () {
+                // Display a confirmation message indicating the feature is under construction
+                window.confirm('This feature is under contruction!')
+
+            })
+        }
+
+        // Function to get fundraiser data from the server
+        function getFundraisers() {
+            // Fetch the fundraiser details using the id from the URL
+            fetch(`http://localhost:3000/fundraiser/${id}`)
+                .then(response => response.json())// Parse the JSON response
+                .then(data => {
+                    // Render the list with the fetched fundraiser data
+                    renderList([data]);
+                })
+        }
+        // Fetch the categories from the server
+        fetch('http://localhost:3000/categories').then(response => response.json())// Parse the JSON response for categories
+            .then(data => {
+                // Store the fetched categories into the categories array
+                categories = data
+                // Store the fetched categories into the categories array
+                getFundraisers()
+            })
+
+    </script>
+</body>
+
+</html>
